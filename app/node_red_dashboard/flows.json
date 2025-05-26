@@ -1,0 +1,544 @@
+[
+    {
+        "id": "11ac0aad7c2900a3",
+        "type": "tab",
+        "label": "Smart Home",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "dfbde08923ca7cf8",
+        "type": "http request",
+        "z": "11ac0aad7c2900a3",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:3000/api/sensor/dht_sensor/latest",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 350,
+        "y": 840,
+        "wires": [
+            [
+                "c6b2ec413c6b396c"
+            ]
+        ]
+    },
+    {
+        "id": "c6b2ec413c6b396c",
+        "type": "json",
+        "z": "11ac0aad7c2900a3",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 510,
+        "y": 840,
+        "wires": [
+            [
+                "2711165362f93844",
+                "cc14cc86bb51d6c8",
+                "3b256de6f1b26116"
+            ]
+        ]
+    },
+    {
+        "id": "2711165362f93844",
+        "type": "function",
+        "z": "11ac0aad7c2900a3",
+        "name": "Get temperature",
+        "func": "const result  = msg.payload[0]\nmsg.payload =result.values.temp; // giá trị temperature/humidity\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 720,
+        "y": 820,
+        "wires": [
+            [
+                "1f3b910edf437f30"
+            ]
+        ]
+    },
+    {
+        "id": "cc14cc86bb51d6c8",
+        "type": "function",
+        "z": "11ac0aad7c2900a3",
+        "name": "Get humidity",
+        "func": "const result = msg.payload[0]\nmsg.payload = result.values.hum; // giá trị temperature/humidity\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 860,
+        "wires": [
+            [
+                "a059d667bb5cb128"
+            ]
+        ]
+    },
+    {
+        "id": "1f3b910edf437f30",
+        "type": "ui_gauge",
+        "z": "11ac0aad7c2900a3",
+        "name": "",
+        "group": "2213897da46d417a",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperature",
+        "label": "°C",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "150",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 910,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "a059d667bb5cb128",
+        "type": "ui_gauge",
+        "z": "11ac0aad7c2900a3",
+        "name": "",
+        "group": "2213897da46d417a",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "gtype": "donut",
+        "title": "Humidity",
+        "label": "%",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 880,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "f3f3396cd35bde7e",
+        "type": "ui_switch",
+        "z": "11ac0aad7c2900a3",
+        "name": "",
+        "label": "Turn on/off led",
+        "tooltip": "",
+        "group": "0fa1c16d8a1cd906",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "onvalue": "on",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "off",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 180,
+        "y": 920,
+        "wires": [
+            [
+                "9fe418ecf297c666"
+            ]
+        ]
+    },
+    {
+        "id": "9fe418ecf297c666",
+        "type": "function",
+        "z": "11ac0aad7c2900a3",
+        "name": "Set header",
+        "func": "let action = msg.payload; // \"on\" hoặc \"off\"\n\nmsg.headers = { 'Content-Type': 'application/json' };\nmsg.payload = {\n    \"status\": action\n};\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 920,
+        "wires": [
+            [
+                "c32c0b87d9cacbad"
+            ]
+        ]
+    },
+    {
+        "id": "c32c0b87d9cacbad",
+        "type": "http request",
+        "z": "11ac0aad7c2900a3",
+        "name": "",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:3000/api/device/esp32_livingroom/control/light",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 590,
+        "y": 920,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3b256de6f1b26116",
+        "type": "debug",
+        "z": "11ac0aad7c2900a3",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "398fe7d0027c978a",
+        "type": "inject",
+        "z": "11ac0aad7c2900a3",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "iso",
+        "payloadType": "date",
+        "x": 170,
+        "y": 840,
+        "wires": [
+            [
+                "dfbde08923ca7cf8"
+            ]
+        ]
+    },
+    {
+        "id": "5ec8adf7406cc6ee",
+        "type": "http request",
+        "z": "11ac0aad7c2900a3",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:3000/api/sensor/ntc_sensor/latest",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 350,
+        "y": 1020,
+        "wires": [
+            [
+                "4b09b312366639a7"
+            ]
+        ]
+    },
+    {
+        "id": "4b09b312366639a7",
+        "type": "json",
+        "z": "11ac0aad7c2900a3",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 510,
+        "y": 1020,
+        "wires": [
+            [
+                "988747af84534dca",
+                "d0d9378f93e9de85"
+            ]
+        ]
+    },
+    {
+        "id": "988747af84534dca",
+        "type": "function",
+        "z": "11ac0aad7c2900a3",
+        "name": "Get temperature",
+        "func": "const result = msg.payload[0]\nmsg.payload = result.values.temp; // giá trị temperature/humidity\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 720,
+        "y": 1020,
+        "wires": [
+            [
+                "b636588d53206c30"
+            ]
+        ]
+    },
+    {
+        "id": "b636588d53206c30",
+        "type": "ui_gauge",
+        "z": "11ac0aad7c2900a3",
+        "name": "",
+        "group": "134655d1741d3a46",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "NTC Temperature",
+        "label": "°C",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "150",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 930,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "d0d9378f93e9de85",
+        "type": "debug",
+        "z": "11ac0aad7c2900a3",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "d0dd0bf8e19819f2",
+        "type": "inject",
+        "z": "11ac0aad7c2900a3",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "iso",
+        "payloadType": "date",
+        "x": 170,
+        "y": 1020,
+        "wires": [
+            [
+                "5ec8adf7406cc6ee"
+            ]
+        ]
+    },
+    {
+        "id": "d253b7479280c42f",
+        "type": "mqtt in",
+        "z": "11ac0aad7c2900a3",
+        "name": "",
+        "topic": "home/+/+/alert",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "3adbc90f8c2a9705",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 1140,
+        "wires": [
+            [
+                "814cf73527b5e884"
+            ]
+        ]
+    },
+    {
+        "id": "814cf73527b5e884",
+        "type": "function",
+        "z": "11ac0aad7c2900a3",
+        "name": "Handle message",
+        "func": "let level = msg.payload.level || \"info\";\nlet message = msg.payload.message || \"No message\";\nlet device = msg.payload.device_id || \"unknown\";\n\nmsg.ui_alert = {\n    title: `⚠️ Alert from ${device}`,\n    message: `${message}`,\n    level: level // warning | info | danger (tuỳ bạn gán UI style)\n};\n\nmsg.topic =  `⚠️ Alert from ${device}`;\nmsg.payload = `${message}` ;\nmsg.level = level;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 1140,
+        "wires": [
+            [
+                "ee8368d88e175fe9"
+            ]
+        ]
+    },
+    {
+        "id": "ee8368d88e175fe9",
+        "type": "ui_toast",
+        "z": "11ac0aad7c2900a3",
+        "position": "top right",
+        "displayTime": "5",
+        "highlight": "red",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "",
+        "x": 550,
+        "y": 1140,
+        "wires": []
+    },
+    {
+        "id": "2213897da46d417a",
+        "type": "ui_group",
+        "name": "DHT Sensor",
+        "tab": "7db8c4f452d94f0f",
+        "order": 2,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "0fa1c16d8a1cd906",
+        "type": "ui_group",
+        "name": "Control",
+        "tab": "7db8c4f452d94f0f",
+        "order": 1,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "134655d1741d3a46",
+        "type": "ui_group",
+        "name": "NTC Sensor",
+        "tab": "7db8c4f452d94f0f",
+        "order": 5,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "3adbc90f8c2a9705",
+        "type": "mqtt-broker",
+        "name": "Local MQTT Broker",
+        "broker": "192.168.1.11",
+        "port": "8883",
+        "tls": "1496d84aa7f2cb35",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": true,
+        "protocolVersion": "5",
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "7db8c4f452d94f0f",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "1496d84aa7f2cb35",
+        "type": "tls-config",
+        "name": "",
+        "cert": "",
+        "key": "",
+        "ca": "",
+        "certname": "",
+        "keyname": "",
+        "caname": "ca.crt",
+        "servername": "",
+        "verifyservercert": true,
+        "alpnprotocol": ""
+    }
+]

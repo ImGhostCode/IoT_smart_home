@@ -1,0 +1,8 @@
+node_modules
+/server/.env
+/server/.env.influxdb2-admin-password
+/server/.env.influxdb2-admin-username
+/server/.env.influxdb2-admin-token
+/server/mqtt_broker/certs/*
+/server/mqtt_broker/config/pwfile
+/server/mqtt_broker/log
